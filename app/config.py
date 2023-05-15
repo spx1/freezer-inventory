@@ -35,4 +35,4 @@ EXPORT_CONFIGS = [
     TestConfig
 ]
 
-config_by_name = {cfg.NAME: cfg for cfg in EXPORT_CONFIGS}
+config_by_name = {cfg.Name: cfg for cfg in EXPORT_CONFIGS}
