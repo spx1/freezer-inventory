@@ -15,4 +15,6 @@ def create_app(environment: str = 'Test') -> flask.Flask:
 
     @app.route("/health")
     def health():
-        flask.jsonify("Web server is healthy")
+        return flask.jsonify("Web server is healthy")
+
+    return app
