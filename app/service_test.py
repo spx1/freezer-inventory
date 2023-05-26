@@ -3,6 +3,7 @@ from .interface import CategoryInterface, ItemInterface
 from .service import CategoryService, ItemService
 import pytest
 from .fixtures import app, db
+import datetime
 
 @pytest.fixture()
 def categories(db):
@@ -59,3 +60,101 @@ class TestCategoryService:
             comparison = CategoryService.get()
             assert len(comparison) == len(categories)
 
+@pytest.fixture()
+def categories(db):
+    categories = [
+            CCategory(id=1,name="Chicken"),
+            CCategory(id=2,name="Beef")
+    ]
+    for category in categories:
+        db.session.add(category)
+
+    db.session.commit()
+    return categories
+
+@pytest.fixture()
+def items(db,categories) -> CItem:
+    items = [
+        CItem(id=1,name="Thighs",category=categories[0],weight=2.5,active=True,added=datetime.datetime.now().date()),
+        CItem(id=2,name="Tenderloin",category=categories[1],weight=0.7,active=True,added=datetime.datetime.now().date()),
+        CItem(id=3,name="Chuck",category=categories[1],weight=1.2,active=True,added=datetime.datetime.now().date()),
+        CItem(id=4,name="Ground",category=categories[1],weight=1,active=False,added=datetime.datetime(year=2023, month=1, day=17)),
+        CItem(id=5,name="Ground",category=categories[1],weight=1,active=True,added=datetime.datetime.now().date()),
+        CItem(id=6,name="Ground",category=categories[1],weight=1,active=True,added=datetime.datetime.now().date()),
+    ]
+    for item in items:
+        db.session.add(item)
+
+    db.session.commit()
+    return items
+
+class TestItemService:
+    def test_create(self,db):
+        test_category = CategoryInterface(name="Chicken")
+        test_item = ItemInterface(id=2, name="Wings", category=test_category, weight=1.2)
+        ItemService.create(test_item)
+
+        items = CItem.query.all()
+        assert len(items) == 1
+        item = items[0]
+        for k in test_item.keys():
+            assert getattr(item,k) == test_item[k]
+
+        assert item.category.id >= 0
+        assert item.category_id == item.category.id
+        assert item.active == True
+        assert item.added == datetime.datetime.now().date()
+
+    def test_get(self,db,items,categories):
+        """Test Search by ID, Name, & Category"""
+        test_items = [
+            ( ItemInterface(id=items[0].id), items[0] ),
+            ( ItemInterface(name=items[3].name), items[3] ),
+            ( ItemInterface(category_id=categories[0].id), items[0] )
+        ]
+
+        for test_interface, test_item in test_items:
+            comparison = ItemService.get(test_interface)
+            assert(len(comparison) > 0) , f"{test_interface['id']}, {test_interface['name']}"
+            for k in comparison[0].keys():
+                assert getattr(test_item, k) == comparison[0][k]
+        
+        """Test return all items"""
+        comparison = ItemService.get()
+        assert len(comparison) == len(items)
+
+        """Test return active items of the correct category"""
+        comparison = ItemService.get( ItemInterface(active=True, name="Ground"))
+        assert len(comparison) == 2
+
+        """Test invalid entries all return emtpy array"""
+        empty_tests = [
+            ItemInterface(id=999999),
+            ItemInterface(name="Not a name"),
+            ItemInterface(category_id=79)
+        ]
+        for empty_test in empty_tests:
+            comparison = ItemService.get(empty_test)
+            assert len(comparison) == 0
+
+        """Test complex query"""
+        item = items[2]
+        test_interface = ItemInterface(name=item.name, category=item.category, active=True)
+        comparison = ItemService.get(test_interface)
+
+        for k in comparison[0].keys():
+            assert getattr(item, k) == comparison[0][k]
+
+    def test_get_name_matches(self,db,items,categories):
+        """Test searching for names"""
+        names = ItemService.get_name_match("nd")
+        assert names[0] == "Ground"
+        assert names[1] == "Tenderloin"
+
+        """Test limiting the number of matches"""
+        names = ItemService.get_name_match("nd",limit=1)
+        assert len(names) == 1
+
+        """Test limiting the category of the name match"""
+        names = ItemService.get_name_match("gh",category=categories[1])
+        assert len(names) == 0
