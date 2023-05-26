@@ -3,6 +3,9 @@ from flask_sqlalchemy import SQLAlchemy
 import flask
 
 BASE_DIRECTORY = os.path.abspath(os.path.dirname(__file__))
+APP_NAME = "Inventory"
+TEMPLATE_DIRECTORY = f"{BASE_DIRECTORY}/app/templates"
+STATIC_DIRECTORY = f"{BASE_DIRECTORY}/app/static"
 db = SQLAlchemy()
 
 def create_app(environment: str = 'Test') -> flask.Flask:
