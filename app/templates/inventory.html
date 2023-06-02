@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Freezer Inventory</title>
+</head>
+<body>
+    <h1>Freezer Inventory</h1>
+    <table class="table" id="inventory-table">
+        <tr>
+            <th></th> <!--Placeholder for Remove Button-->
+            <th>Category</th>
+            <th>Name</th>
+            <th>Weight/Count</th>
+            <th>Added</th>
+        </tr>
+        {% for j in items %}
+        <tr>
+            <td></td><!--Placeholder for Remove Button-->
+            <td>{{j['category']['name']}}</td>
+            <td>{{j['name']}}</td>
+            <td>{{j['weight'] if j['weight'] is not None else j['count']}}</td>
+            <td>{{j['added']}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

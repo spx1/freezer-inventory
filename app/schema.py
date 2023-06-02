@@ -9,11 +9,11 @@ class ItemSchema(Schema):
     name = fields.Str()
     category_id = fields.Int()
     category = fields.Nested(CategorySchema)
-    weight = fields.Float()
-    count = fields.Int()
+    weight = fields.Float(allow_none=True)
+    count = fields.Int(allow_none=True)
     active = fields.Bool()
     added = fields.DateTime()
-    removed = fields.DateTime()
+    removed = fields.DateTime(allow_none=True)
 
 
 
