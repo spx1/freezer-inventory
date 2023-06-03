@@ -7,6 +7,7 @@ class BaseConfig(object):
     Testing = False
     SQLALCHEMY_DATABASE_URI = f'sqlite:///{BASE_DIRECTORY}/app.db'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
+    SECRET_KEY = 'a random walk down main street'
 
 class TestConfig(BaseConfig):
     Name = 'Test'
@@ -20,6 +21,7 @@ class DevelopmentConfig(BaseConfig):
     SQL_SERVER = os.environ.get('SQL_SERVER','locahlost')
     SQL_KEY = os.environ.get('SQL_PASSWORD','My not so secret password')
     SQL_DB = os.environ.get('SQL_DATABASE','mydatabase')
+    SECRET_KEY = os.environ.get('SECRET_KEY',BaseConfig.SECRET_KEY)
     SQLALCHEMY_DATABASE_URI = f'mysql+mysqldb://{SQL_USER}:{SQL_KEY}@{SQL_SERVER}/{SQL_DB}'
 
 class ProductionConfig(DevelopmentConfig):
