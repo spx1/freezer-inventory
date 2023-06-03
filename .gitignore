@@ -164,3 +164,6 @@ startup.sh
 
 # Ignore the SQLite databases
 *.db
+
+# Ignore VSCode configuration
+.vscode/
