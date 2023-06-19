@@ -88,9 +88,24 @@ class ItemService:
         except ValueError as e:
             print(e)
             return []
+        
+    @staticmethod
+    def get_object(filter : ItemInterface = None) -> List[CItem]:
+        query = CItem.query
+        if filter is not None:
+            if 'active' in filter:
+                query = query.filter(CItem.active == filter['active'])
+            if 'id' in filter and filter['id'] >= 0:
+                query = query.filter(CItem.id == filter['id'])
+            else:
+                if 'name' in filter and filter['name'] != "":
+                    query = query.filter(CItem.name == filter['name'])
+                if 'category_id' in filter:
+                    query = query.filter(CItem.category_id == filter['category_id'])
+        return query.order_by(CItem.added).all()
     
     @staticmethod    
-    def get(obj : ItemInterface = None) -> List[ItemInterface]:
+    def get(filter : ItemInterface = None) -> List[ItemInterface]:
         def CItemList2InterfaceList(objs:List[CItem]):
             def CItem2Interface(obj:CItem):
                 return ItemInterface(
@@ -100,18 +115,7 @@ class ItemService:
                     )
             return [CItem2Interface(x) for x in objs]
         
-        query = CItem.query
-        if obj is not None:
-            if 'active' in obj:
-                query = query.filter(CItem.active == obj['active'])
-            if 'id' in obj and obj['id'] >= 0:
-                query = query.filter(CItem.id == obj['id'])
-            else:
-                if 'name' in obj and obj['name'] != "":
-                    query = query.filter(CItem.name == obj['name'])
-                if 'category_id' in obj:
-                    query = query.filter(CItem.category_id == obj['category_id'])
-        return CItemList2InterfaceList( query.order_by(CItem.added).all() )
+        return CItemList2InterfaceList( ItemService.get_object(filter) )
     
     @staticmethod
     def get_name_match(token : str, limit : int = 5, category : CategoryInterface = None ) -> List[str]:
@@ -131,3 +135,18 @@ class ItemService:
         result = db.session.execute(stmt)
         matches = [x for x, in result.columns('name')]
         return matches
+
+    @staticmethod
+    def update(item: ItemInterface, updates: ItemInterface) -> ItemInterface:
+        obj = ItemService.get_object(item)[0]
+
+        for key in updates.keys():
+            setattr(obj, key, updates[key])
+
+        if 'active' in updates and not updates['active'] and 'removed' not in updates:
+            obj.removed = datetime.datetime.now().date()
+
+        db.session.commit()
+
+        return ItemService.get( ItemInterface(id=obj.id) )[0]
+

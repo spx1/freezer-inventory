@@ -2,6 +2,21 @@
 <html lang="en">
 <head>
     <title>Freezer Inventory</title>
+    <script>
+        function removeOnClickHandler(url) {
+            data = {
+                active: false
+            };
+            xhtml = new XMLHttpRequest();
+            xhtml.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    window.location.href = "{{url_for('Inventory.get_application_page')}}";
+                }
+            }
+            xhtml.open('PUT',url);
+            xhtml.send(JSON.stringify(data));
+        };
+    </script>
 </head>
 <body>
     <h1>Freezer Inventory</h1>
@@ -15,7 +30,9 @@
         </tr>
         {% for j in items %}
         <tr>
-            <td></td><!--Placeholder for Remove Button-->
+            <td>
+                <button onclick="removeOnClickHandler('{{url_for('Inventory.put_item', id=j['id'])}}')">Remove</button>
+            </td>
             <td>{{j['category']['name']}}</td>
             <td>{{j['name']}}</td>
             <td>

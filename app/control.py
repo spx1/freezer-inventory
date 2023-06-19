@@ -1,4 +1,4 @@
-from flask import Blueprint,render_template,redirect,url_for
+from flask import Blueprint,render_template,redirect,url_for,request
 from app import TEMPLATE_DIRECTORY, STATIC_DIRECTORY, APP_NAME
 from .service import ItemService, CategoryService
 from .interface import ItemInterface, CategoryInterface
@@ -32,7 +32,7 @@ class MyForm(FlaskForm):
 @api.route(rule='/home', methods=['GET'])
 def get_application_page():
     filters = ItemInterface(active=True)
-    items = ItemService.get()
+    items = ItemService.get(filters)
     form = MyForm()
 
     return render_template('inventory.html',items=items, form=form)
@@ -47,3 +47,10 @@ def post_item():
     
     return redirect(url_for(f'{APP_NAME}.get_application_page'))
 
+@api.route(rule='/item/<int:id>',methods=['PUT'])
+def put_item(id: int):
+    item = ItemService.get( ItemInterface(id=id) )[0]
+    updates : ItemInterface = ItemSchema().loads(request.data)
+    ItemService.update( item, updates )
+
+    return "OK"

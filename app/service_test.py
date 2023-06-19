@@ -158,3 +158,20 @@ class TestItemService:
         """Test limiting the category of the name match"""
         names = ItemService.get_name_match("gh",category=categories[1])
         assert len(names) == 0
+
+    def test_put_item(self,db,items,categories):
+        """Test renaming the device"""
+        item = ItemService.get( ItemInterface(id=1) )[0]
+        updates = ItemInterface(name="New Name")
+        ItemService.update(item, updates)
+        test = ItemService.get( item )[0]
+
+        assert test['name'] == 'New Name'
+
+        """ Test deactivating device"""
+        item = ItemService.get( ItemInterface(id=2) )[0]
+        updates = ItemInterface(active=False)
+        test = ItemService.update(item, updates)
+        
+        assert not test['active']
+        assert test['removed'] == datetime.datetime.now().date()
