@@ -26,7 +26,8 @@ target_metadata = [db.Model.metadata]
 from app.config import config_by_name
 from os import getenv
 active_config = config_by_name[getenv("ENVIRONMENT","Development")]
-config.set_main_option("sqlalchemy.url",active_config.SQLALCHEMY_DATABASE_URI)
+db_url_escaped = active_config.SQLALCHEMY_DATABASE_URI.replace('%','%%')
+config.set_main_option("sqlalchemy.url",db_url_escaped)
 
 # other values from the config, defined by the needs of env.py,
 # can be acquired:
