@@ -1,0 +1,37 @@
+body {
+    font-size: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+}
+
+h1 {
+    font-size: 2.0em;
+    color: dodgerblue;
+}
+
+h1.form {
+    text-align: center;
+}
+
+th {
+    font-size: 1.2em;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #9a9996;
+    text-align: center;
+    padding: 15px;
+}
+
+tr {
+    font-size: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+}
+tr:nth-child(even) {background-color: #9a9996;}
+
+td {
+    font-size: 1.0em;
+    font-family: Arial, Helvetica, sans-serif;
+    color: black;
+    text-align: center;
+    padding: 15px;
+}
