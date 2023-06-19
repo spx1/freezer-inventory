@@ -1,5 +1,6 @@
 import os
 from app import BASE_DIRECTORY
+from urllib.parse import quote_plus
 
 class BaseConfig(object):
     Name = 'Default'
@@ -22,7 +23,7 @@ class DevelopmentConfig(BaseConfig):
     SQL_KEY = os.environ.get('SQL_PASSWORD','My not so secret password')
     SQL_DB = os.environ.get('SQL_DATABASE','mydatabase')
     SECRET_KEY = os.environ.get('SECRET_KEY',BaseConfig.SECRET_KEY)
-    SQLALCHEMY_DATABASE_URI = f'mysql+mysqldb://{SQL_USER}:{SQL_KEY}@{SQL_SERVER}/{SQL_DB}'
+    SQLALCHEMY_DATABASE_URI = f'mysql+mysqldb://{SQL_USER}:{quote_plus(SQL_KEY)}@{SQL_SERVER}/{SQL_DB}'
 
 class ProductionConfig(DevelopmentConfig):
     Name = 'Production'
