@@ -68,25 +68,23 @@
             var category = document.getElementById("Category").value;
             var name = document.getElementById("Name").value;
                         
-            if( category.length > 2 || name.length > 2 ) {
-                params = new URLSearchParams();
-                if( category.length > 2 ) {
-                    params.append("category", category)
-                }
-                if( name.length > 2 ) {
-                    params.append("name", name)
-                }
-                var url = "{{url_for('Inventory.get_item')}}?" + params.toString();
-                xhtml = new XMLHttpRequest();
-                xhtml.onreadystatechange = function() {
-                    if(this.readyState == 4 && this.status == 200) {
-                        clearTable();
-                        populateTable(this.responseText);
-                    }
-                }
-                xhtml.open( 'GET',url );
-                xhtml.send();
+            params = new URLSearchParams();
+            if( category.length > 0 ) {
+                params.append("category", "%" + category + "%")
             }
+            if( name.length > 0 ) {
+                params.append("name", "%" + name + "%")
+            }
+            var url = "{{url_for('Inventory.get_item')}}?" + params.toString();
+            xhtml = new XMLHttpRequest();
+            xhtml.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    clearTable();
+                    populateTable(this.responseText);
+                }
+            }
+            xhtml.open( 'GET',url );
+            xhtml.send();
         };
     </script>
 </head>

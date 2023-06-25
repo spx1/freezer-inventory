@@ -91,17 +91,22 @@ class ItemService:
         
     @staticmethod
     def get_object(filter : ItemInterface = None) -> List[CItem]:
-        query = CItem.query
+        query = CItem.query.join(CCategory)
         if filter is not None:
             if 'active' in filter:
                 query = query.filter(CItem.active == filter['active'])
             if 'id' in filter and filter['id'] >= 0:
                 query = query.filter(CItem.id == filter['id'])
             else:
-                if 'name' in filter and filter['name'] != "":
-                    query = query.filter(CItem.name == filter['name'])
+                query = query.filter( CItem.name.like( filter.get('name','%') ) )
                 if 'category_id' in filter:
                     query = query.filter(CItem.category_id == filter['category_id'])
+                elif 'category' in filter:
+                    category = filter['category']
+                    if 'id' in category:
+                        query = query.filter(CCategory.id == category['id'])
+                    else:
+                        query = query.filter(CCategory.name.like( category.get('name','%') ) )
         return query.order_by(CItem.added).all()
     
     @staticmethod    
