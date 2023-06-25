@@ -17,6 +17,76 @@
             xhtml.open('PUT',url);
             xhtml.send(JSON.stringify(data));
         };
+
+        function clearTable() {
+            // clear all items from the inventory display table
+            var rows = document.getElementsByName("dataRow")
+            var i = rows.length;
+            while(i--){
+                rows[i].parentNode.removeChild(rows[i]);
+            }
+        }
+
+        function populateTable(data) {
+            objs = JSON.parse(data);
+            for( obj of objs ) {
+                var row_element = document.createElement("tr");
+                row_element.setAttribute("id", "row" + obj.id);
+                row_element.setAttribute("name","dataRow");
+                document.getElementById("inventory-table").appendChild(row_element);
+
+                var data_elements = [
+                    document.createElement("td"),
+                    document.createElement("td"),
+                    document.createElement("td"),
+                    document.createElement("td"),
+                    document.createElement("td")
+                ];
+
+                for( data_element of data_elements ) {
+                    row_element.appendChild(data_element);
+                }
+                var button_element = document.createElement("button");
+                var SCRIPT_ROOT = {{ request.script_root|tojson }};
+                button_element.setAttribute("onclick", "removeOnClickHandler( '${SCRIPT_ROOT}/${obj.id}')" );
+                button_element.innerText = "Remove"
+                data_elements[0].appendChild(button_element);
+                data_elements[1].innerText = obj.category.name;
+                data_elements[2].innerText = obj.name;
+                if( obj.weight ){
+                    data_elements[3].innerText = obj.weight;
+                } else if( obj.count ){
+                    data_elements[3].innerText = obj.count;
+                } else {
+                    data_elements[3].innerText = "n/a";
+                }
+                data_elements[4].innerText = obj.added;
+            }
+        }
+
+        function filterTable() {
+            
+            var category = document.getElementById("Category").value;
+            var name = document.getElementById("Name").value;
+                        
+            params = new URLSearchParams();
+            if( category.length > 0 ) {
+                params.append("category", "%" + category + "%")
+            }
+            if( name.length > 0 ) {
+                params.append("name", "%" + name + "%")
+            }
+            var url = "{{url_for('Inventory.get_item')}}?" + params.toString();
+            xhtml = new XMLHttpRequest();
+            xhtml.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    clearTable();
+                    populateTable(this.responseText);
+                }
+            }
+            xhtml.open( 'GET',url );
+            xhtml.send();
+        };
     </script>
 </head>
 <body>
@@ -29,8 +99,15 @@
             <th>Weight/Count</th>
             <th>Added</th>
         </tr>
-        {% for j in items %}
         <tr>
+            <td></td> <!--Placeholder for Remove Button-->
+            <td><input type="text" id="Category" name="Category" oninput="filterTable()"></td>
+            <td><input type="text" id="Name" name="Name" oninput="filterTable()"></td>
+            <td></td> <!--Placeholder for Weight/Count which have no filter-->
+            <td></td> <!--Placeholder for Added which have no filter-->
+        </tr>
+        {% for j in items %}
+        <tr name="dataRow" id="row{{j['id']}}">
             <td>
                 <button onclick="removeOnClickHandler('{{url_for('Inventory.put_item', id=j['id'])}}')">Remove</button>
             </td>

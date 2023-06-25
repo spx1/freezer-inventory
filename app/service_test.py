@@ -139,12 +139,34 @@ class TestItemService:
 
         """Test complex query"""
         item = items[2]
-        test_interface = ItemInterface(name=item.name, category=item.category, active=True)
+        test_interface = ItemInterface(name=item.name, category=CategoryInterface(name = item.category.name), active=True)
         comparison = ItemService.get(test_interface)
 
         for k in comparison[0].keys():
             assert getattr(item, k) == comparison[0][k]
 
+        """Test wildcard matches on name"""
+        test_interface = ItemInterface(name="Ch%", active=True)
+        comparison = ItemService.get(test_interface)
+
+        assert len(comparison) == 1
+        ids = [x['id'] for x in comparison]
+        assert  items[2].id in ids
+
+        """Test wildcard matches on category name"""
+        test_interface = ItemInterface(category=CategoryInterface(name="Ch%"))
+        comparison = ItemService.get(test_interface)
+
+        assert len(comparison) == 1
+        ids = [x['id'] for x in comparison]
+        assert  items[0].id in ids
+
+        test_interface = ItemInterface(category=CategoryInterface(name='%ee%'))
+        comparison = ItemService.get(test_interface)
+
+        assert len(comparison) == 5
+        assert items[0] not in comparison
+ 
     def test_get_name_matches(self,db,items,categories):
         """Test searching for names"""
         names = ItemService.get_name_match("nd")
