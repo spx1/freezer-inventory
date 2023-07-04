@@ -6,6 +6,7 @@ from .schema import ItemSchema, CategorySchema
 from flask_wtf import FlaskForm
 from wtforms import StringField, FloatField, IntegerField, DateField
 from wtforms.validators import DataRequired,Optional
+from typing import List
 
 api = Blueprint(
     name = f'{APP_NAME}',
@@ -54,3 +55,15 @@ def put_item(id: int):
     ItemService.update( item, updates )
 
     return "OK"
+
+@api.route(rule='/items', methods=['GET'])
+def get_item():
+    schema = ItemSchema()
+    filter = ItemInterface( 
+        category = CategoryInterface(name = request.args.get("category","%") ),  
+        name = request.args.get("name","%")
+        )
+    filter['Active'] = True
+    items : List[ItemInterface] = ItemService.get(filter)
+
+    return schema.dumps(items, many=True)
