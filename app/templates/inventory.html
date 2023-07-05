@@ -76,6 +76,7 @@
             if( name.length > 0 ) {
                 params.append("name", "%" + name + "%")
             }
+            params.append("active", "True");
             var url = "{{url_for('Inventory.get_item')}}?" + params.toString();
             xhtml = new XMLHttpRequest();
             xhtml.onreadystatechange = function() {
