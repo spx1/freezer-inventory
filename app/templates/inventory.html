@@ -47,8 +47,8 @@
                     row_element.appendChild(data_element);
                 }
                 var button_element = document.createElement("button");
-                var SCRIPT_ROOT = {{ request.script_root|tojson }};
-                button_element.setAttribute("onclick", "removeOnClickHandler( '${SCRIPT_ROOT}/${obj.id}')" );
+                var SCRIPT_ROOT = {{ request.script_root|tojson }} + "/Inventory";
+                button_element.setAttribute("onclick", "removeOnClickHandler( '" + SCRIPT_ROOT + "/item/" + obj.id + "' )" );
                 button_element.innerText = "Remove"
                 data_elements[0].appendChild(button_element);
                 data_elements[1].innerText = obj.category.name;
@@ -127,14 +127,16 @@
         {% endfor %}
     </table>
 
-    <form method="POST" action="{{url_for('Inventory.post_item')}}">
-        {{ form.csrf_token }}
-        {{ form.category.label }} {{ form.category(size=20) }}
-        {{ form.name.label }} {{ form.name(size=20) }}
-        {{ form.weight.label }} {{ form.weight }}
-        {{ form.count.label }} {{ form.count }}
-        <input type="submit" value="GO">        
-    </form>
+    <div class="form-container" id="input-form-conatiner">
+        <form method="POST" action="{{url_for('Inventory.post_item')}}">
+            {{ form.csrf_token }}
+            {{ form.category.label }} {{ form.category(size=20) }}
+            {{ form.name.label }} {{ form.name(size=20) }}
+            {{ form.weight.label }} {{ form.weight }}
+            {{ form.count.label }} {{ form.count }}
+            <input type="submit" value="GO">        
+        </form>
+    </div>
 
     {% if form.name.errors %}
         <ul class="errors">
