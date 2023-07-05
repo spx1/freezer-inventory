@@ -35,3 +35,11 @@ td {
     text-align: center;
     padding: 15px;
 }
+
+.form-container {
+    background-color: white;
+    border: 5px solid black;
+    position: sticky;
+    bottom: 0;
+    /* width: 100%; */
+}
