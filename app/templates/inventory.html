@@ -154,6 +154,8 @@
 
             test_arr = ["Apple", "Banana", "Cuccumber", "Pear", "Peach"];
             inp.addEventListener("input", function(e) {
+                // close any other lists
+                closeAllLists()
                 /* create a DIV that holds all of the items */
                 list = document.createElement("DIV");
                 list.setAttribute("id", this.id + "-autocomplete-list");
@@ -167,10 +169,22 @@
                     item.innerText = test_arr[i];
                     item.addEventListener("click", function(e) {
                         inp.value = this.innerText;
+                        closeAllLists();
                     });
                     list.appendChild(item);
                 }
             });
+
+            function closeAllLists(elem) {
+                /* Closes ALL autocomplete lists in the document,
+                except for the one passed as elem (optional) */
+                var lists = document.getElementsByClassName("autocomplete-items");
+                for( var i = 0; i < lists.length; i++ ) {
+                    if( elem != lists[i] && elem != inp ) {
+                        lists[i].parentNode.removeChild(lists[i]);
+                    }
+                }
+            }
         }
 
         autocomplete(document.getElementById('category'));
