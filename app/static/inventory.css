@@ -43,3 +43,38 @@ td {
     bottom: 0;
     /* width: 100%; */
 }
+
+.autocomplete {
+    /* container to hold the autocomplete input and items */
+    position: relative;
+    display: inline-block;
+}
+
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid black;
+    border-bottom: none;
+    z-index: 99;
+    /* top: 100%; */
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    background-color: white;
+}
+
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid black;
+}
+
+.autocomplete-items div:hover {
+    /*when mouse hovering over an item*/
+    background-color: darkgray;
+}
+
+.autocomplete-active {
+    /*when navigating through the items using arrow keys*/
+    background-color: dodgerblue !important;
+    color: white;
+}
