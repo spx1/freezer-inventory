@@ -25,7 +25,7 @@ th {
     padding: 0.2em;
 }
 
-tr:nth-child(even) {background-color: darkgray;}
+tr.dataRow:nth-child(even) {background-color: darkgray;}
 
 td {
     color: black;
