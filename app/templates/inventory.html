@@ -33,6 +33,7 @@
                 var row_element = document.createElement("tr");
                 row_element.setAttribute("id", "row" + obj.id);
                 row_element.setAttribute("name","dataRow");
+                row_element.setAttribute("class","dataRow");
                 document.getElementById("inventory-table").appendChild(row_element);
 
                 var data_elements = [
@@ -108,7 +109,7 @@
             <td></td> <!--Placeholder for Added which have no filter-->
         </tr>
         {% for j in items %}
-        <tr name="dataRow" id="row{{j['id']}}">
+        <tr name="dataRow" class="dataRow" id="row{{j['id']}}">
             <td>
                 <button onclick="removeOnClickHandler('{{url_for('Inventory.put_item', id=j['id'])}}')">Remove</button>
             </td>
