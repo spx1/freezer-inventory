@@ -61,7 +61,8 @@ def get_item():
     schema = ItemSchema()
     filter = ItemInterface( 
         category = CategoryInterface(name = request.args.get("category","%") ),  
-        name = request.args.get("name","%")
+        name = request.args.get("name","%"),
+        active = bool(request.args.get("active", "True"))
         )
     filter['Active'] = True
     items : List[ItemInterface] = ItemService.get(filter)

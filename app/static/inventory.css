@@ -32,6 +32,14 @@ td {
     padding: 0.2em;
 }
 
+.form-container {
+    background-color: white;
+    border: 5px solid black;
+    position: sticky;
+    bottom: 0;
+    /* width: 100%; */
+}
+
 td button {
     font-size: 1.2em;
 }
