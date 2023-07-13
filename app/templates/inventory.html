@@ -3,67 +3,6 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='inventory.css')}}">
     <title>Freezer Inventory</title>
-    
-</head>
-<body>
-    <h1>Freezer Inventory</h1>
-    <table class="table" id="inventory-table">
-        <tr>
-            <th></th> <!--Placeholder for Remove Button-->
-            <th>Category</th>
-            <th>Name</th>
-            <th>Weight/Count</th>
-            <th>Added</th>
-        </tr>
-        <tr>
-            <td></td> <!--Placeholder for Remove Button-->
-            <td><input type="text" id="category-filter" name="Category" oninput="filterTable()"></td>
-            <td><input type="text" id="name-filter" name="Name" oninput="filterTable()"></td>
-            <td></td> <!--Placeholder for Weight/Count which have no filter-->
-            <td></td> <!--Placeholder for Added which have no filter-->
-        </tr>
-        {% for j in items %}
-        <tr name="dataRow" class="dataRow" id="row{{j['id']}}">
-            <td>
-                <button onclick="removeOnClickHandler('{{url_for('Inventory.put_item', id=j['id'])}}')">Remove</button>
-            </td>
-            <td>{{j['category']['name']}}</td>
-            <td>{{j['name']}}</td>
-            <td>
-                {% if j['weight'] is not none %}
-                {{ j['weight'] }} lbs
-                {% elif j['count'] is not none %}
-                {{ j['count'] }} cnt
-                {% else %}
-                N/A
-                {% endif %}
-            </td>
-            <td>{{j['added']}}</td>
-        </tr>
-        {% endfor %}
-    </table>
-
-    <!-- <div class="form-container" id="input-form-conatiner"> -->
-        <form method="POST" action="{{url_for('Inventory.post_item')}}" autocomplete="off">
-            {{ form.csrf_token }}
-            {{ form.category.label }} 
-            <div class="autocomplete" id="category-autocomplete" style="width:300px">{{ form.category(size=20) }}</div>
-            {{ form.name.label }} 
-            <div class="autocomplete" id="name-autocomplete" style="width:300px">{{ form.name(size=20) }}</div>
-            {{ form.weight.label }} {{ form.weight }}
-            {{ form.count.label }} {{ form.count }}
-            <input type="submit" value="GO">        
-        </form>
-    <!-- </div> -->
-
-    {% if form.name.errors %}
-        <ul class="errors">
-            {% for error in form.name.errors %}
-                <li>{{ error }}</li>
-            {% endfor %}
-        </ul>
-    {% endif %}
-    
 
     <script>
         function removeOnClickHandler(url) {
@@ -189,8 +128,69 @@
             }
         }
 
-        autocomplete(document.getElementById('category'));
-        autocomplete(document.getElementById('name'));
+        document.addEventListener('DOMContentLoaded', function()  {
+            autocomplete(document.getElementById('category'));
+            autocomplete(document.getElementById('name'));
+        });       
     </script>
+</head>
+<body>
+    <h1>Freezer Inventory</h1>
+    <table class="table" id="inventory-table">
+        <tr>
+            <th></th> <!--Placeholder for Remove Button-->
+            <th>Category</th>
+            <th>Name</th>
+            <th>Weight/Count</th>
+            <th>Added</th>
+        </tr>
+        <tr>
+            <td></td> <!--Placeholder for Remove Button-->
+            <td><input type="text" id="category-filter" name="Category" oninput="filterTable()"></td>
+            <td><input type="text" id="name-filter" name="Name" oninput="filterTable()"></td>
+            <td></td> <!--Placeholder for Weight/Count which have no filter-->
+            <td></td> <!--Placeholder for Added which have no filter-->
+        </tr>
+        {% for j in items %}
+        <tr name="dataRow" class="dataRow" id="row{{j['id']}}">
+            <td>
+                <button onclick="removeOnClickHandler('{{url_for('Inventory.put_item', id=j['id'])}}')">Remove</button>
+            </td>
+            <td>{{j['category']['name']}}</td>
+            <td>{{j['name']}}</td>
+            <td>
+                {% if j['weight'] is not none %}
+                {{ j['weight'] }} lbs
+                {% elif j['count'] is not none %}
+                {{ j['count'] }} cnt
+                {% else %}
+                N/A
+                {% endif %}
+            </td>
+            <td>{{j['added']}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <!-- <div class="form-container" id="input-form-conatiner"> -->
+        <form method="POST" action="{{url_for('Inventory.post_item')}}" autocomplete="off">
+            {{ form.csrf_token }}
+            {{ form.category.label }} 
+            <div class="autocomplete" id="category-autocomplete" style="width:300px">{{ form.category(size=20) }}</div>
+            {{ form.name.label }} 
+            <div class="autocomplete" id="name-autocomplete" style="width:300px">{{ form.name(size=20) }}</div>
+            {{ form.weight.label }} {{ form.weight }}
+            {{ form.count.label }} {{ form.count }}
+            <input type="submit" value="GO">        
+        </form>
+    <!-- </div> -->
+
+    {% if form.name.errors %}
+        <ul class="errors">
+            {% for error in form.name.errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 </body>
 </html>
