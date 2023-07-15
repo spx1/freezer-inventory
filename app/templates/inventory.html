@@ -92,29 +92,30 @@
         };
 
         function autocomplete(inp) {
+            var xhtml = new XMLHttpRequest();
+            xhtml.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    objs = JSON.parse(this.responseText);
+                    closeAllLists()
+                    /* create a DIV that holds all of the items */
+                    list = document.createElement("DIV");
+                    list.setAttribute("id", inp.id + "-autocomplete-list");
+                    list.setAttribute("class", "autocomplete-items");
+                    inp.parentNode.appendChild(list);
 
-            test_arr = ["Apple", "Banana", "Cuccumber", "Pear", "Peach"];
-            inp.addEventListener("input", function(e) {
-                // close any other lists
-                closeAllLists()
-                /* create a DIV that holds all of the items */
-                list = document.createElement("DIV");
-                list.setAttribute("id", this.id + "-autocomplete-list");
-                list.setAttribute("class", "autocomplete-items");
-                this.parentNode.appendChild(list);
-
-                for( i = 0; i < test_arr.length; i++ )  {
-                    item = document.createElement("DIV");
-                    item.setAttribute("id", this.id + "autocomplete-item-" + i);
-                    //item.setAttribute("class", "autocomplete-items");
-                    item.innerText = test_arr[i];
-                    item.addEventListener("click", function(e) {
-                        inp.value = this.innerText;
-                        closeAllLists();
-                    });
-                    list.appendChild(item);
-                }
-            });
+                    for( i = 0; i < objs.length; i++ )  {
+                        item = document.createElement("DIV");
+                        item.setAttribute("id", this.id + "autocomplete-item-" + i);
+                        //item.setAttribute("class", "autocomplete-items");
+                        item.innerText = objs[i].name;
+                        item.addEventListener("click", function(e) {
+                            inp.value = this.innerText;
+                            closeAllLists();
+                        });
+                        list.appendChild(item);
+                    }
+                };
+            };
 
             function closeAllLists(elem) {
                 /* Closes ALL autocomplete lists in the document,
@@ -126,11 +127,21 @@
                     }
                 }
             }
-        }
+            inp.addEventListener("input", function(e) {
+                // close any other lists
+                params = new URLSearchParams();
+                if( this.value.length > 0 ) {
+                    params.append("category", "%" + this.value + "%");
+                }
+                var url = "{{url_for('Inventory.get_category')}}?" + params.toString();
+                xhtml.open('GET', url);
+                xhtml.send();
+            });
+        };
 
         document.addEventListener('DOMContentLoaded', function()  {
             autocomplete(document.getElementById('category'));
-            autocomplete(document.getElementById('name'));
+            /*autocomplete(document.getElementById('name'));*/
         });       
     </script>
 </head>

@@ -44,7 +44,7 @@ class CategoryService:
             if obj.get('id') is not None and obj.get('id') >= 0:
                 query = query.filter(CCategory.id == obj['id'])
             elif obj.get('name',"") != "":
-                query = query.filter(CCategory.name == obj['name'])
+                query = query.filter(CCategory.name.like( obj.get('name','%') ) )
         return CCategoryList2InterfaceList( query.order_by(CCategory.name).all() )
     
     @staticmethod
