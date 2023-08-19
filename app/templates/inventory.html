@@ -91,7 +91,7 @@
             xhtml.send();
         };
 
-        function autocomplete(inp) {
+        function autocomplete(inp,foo_url) {
             var xhtml = new XMLHttpRequest();
             xhtml.onreadystatechange = function() {
                 if(this.readyState == 4 && this.status == 200) {
@@ -130,18 +130,35 @@
             inp.addEventListener("input", function(e) {
                 // close any other lists
                 params = new URLSearchParams();
-                if( this.value.length > 0 ) {
-                    params.append("category", "%" + this.value + "%");
-                }
-                var url = "{{url_for('Inventory.get_category')}}?" + params.toString();
+                var url = foo_url(params);
                 xhtml.open('GET', url);
                 xhtml.send();
             });
         };
 
+        var category_url = function(params) {
+            category = document.getElementById('category');
+            if( category.value.length > 0 ) {
+                params.append("category", "%" + category.value + "%");
+            }
+            return "{{url_for('Inventory.get_category')}}?" + params.toString(); 
+        }
+
+        var item_url = function(params) {
+            category = document.getElementById('category');
+            item = document.getElementById('name');
+            if( category.value.length > 0 ) {
+                params.append("category", "%" + category.value + "%");
+            }
+            if( item.value.length > 0 ) {
+                params.append("name", "%" + item.value + "%");
+            }
+            return "{{url_for('Inventory.get_item')}}?" + params.toString();
+        }
+
         document.addEventListener('DOMContentLoaded', function()  {
-            autocomplete(document.getElementById('category'));
-            /*autocomplete(document.getElementById('name'));*/
+            autocomplete(document.getElementById('category'), category_url);
+            autocomplete(document.getElementById('name'), item_url);
         });       
     </script>
 </head>
