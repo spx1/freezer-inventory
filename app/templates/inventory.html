@@ -3,6 +3,7 @@
 <head>
     <link rel="stylesheet" type="text/css" href="{{url_for('static',filename='inventory.css')}}">
     <title>Freezer Inventory</title>
+
     <script>
         function removeOnClickHandler(url) {
             data = {
@@ -33,6 +34,7 @@
                 var row_element = document.createElement("tr");
                 row_element.setAttribute("id", "row" + obj.id);
                 row_element.setAttribute("name","dataRow");
+                row_element.setAttribute("class","dataRow");
                 document.getElementById("inventory-table").appendChild(row_element);
 
                 var data_elements = [
@@ -66,8 +68,8 @@
 
         function filterTable() {
             
-            var category = document.getElementById("Category").value;
-            var name = document.getElementById("Name").value;
+            var category = document.getElementById("category-filter").value;
+            var name = document.getElementById("name-filter").value;
                         
             params = new URLSearchParams();
             if( category.length > 0 ) {
@@ -88,6 +90,86 @@
             xhtml.open( 'GET',url );
             xhtml.send();
         };
+
+        function autocomplete(inp,foo_url) {
+            var xhtml = new XMLHttpRequest();
+            xhtml.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    objs = JSON.parse(this.responseText);
+                    closeAllLists()
+                    /* create a DIV that holds all of the items */
+                    list = document.createElement("DIV");
+                    list.setAttribute("id", inp.id + "-autocomplete-list");
+                    list.setAttribute("class", "autocomplete-items");
+                    inp.parentNode.appendChild(list);
+
+                    for( i = 0; i < objs.length; i++ )  {
+                        item = document.createElement("DIV");
+                        item.setAttribute("id", this.id + "autocomplete-item-" + i);
+                        //item.setAttribute("class", "autocomplete-items");
+                        item.innerText = objs[i].name;
+                        item.addEventListener("click", function(e) {
+                            inp.value = this.innerText;
+                            closeAllLists();
+                        });
+                        list.appendChild(item);
+                    }
+                };
+            };
+
+            function closeAllLists(elem) {
+                /* Closes ALL autocomplete lists in the document,
+                except for the one passed as elem (optional) */
+                var lists = document.getElementsByClassName("autocomplete-items");
+                for( var i = 0; i < lists.length; i++ ) {
+                    if( elem != lists[i] && elem != inp ) {
+                        lists[i].parentNode.removeChild(lists[i]);
+                    }
+                }
+            }
+            inp.addEventListener("input", function(e) {
+                // close any other lists
+                params = new URLSearchParams();
+                var url = foo_url(params);
+                if( url ) {
+                    xhtml.open('GET', url);
+                    xhtml.send();
+                } else {
+                    closeAllLists();
+                }
+            });
+        };
+
+        var category_url = function(params) {
+            category = document.getElementById('category');
+            if( category.value.length > 0 ) {
+                params.append("category", "%" + category.value + "%");
+                return "{{url_for('Inventory.get_category')}}?" + params.toString();
+            } else {
+                return false
+            }
+            
+        }
+
+        var item_url = function(params) {
+            category = document.getElementById('category');
+            item = document.getElementById('name');
+            if( category.value.length > 0 ) {
+                params.append("category", "%" + category.value + "%");
+            }
+            if( item.value.length > 0 ) {
+                params.append("name", "%" + item.value + "%");
+                return "{{url_for('Inventory.get_item')}}?" + params.toString();
+            } else {
+                return false;
+            }
+            
+        }
+
+        document.addEventListener('DOMContentLoaded', function()  {
+            autocomplete(document.getElementById('category'), category_url);
+            autocomplete(document.getElementById('name'), item_url);
+        });       
     </script>
 </head>
 <body>
@@ -102,13 +184,13 @@
         </tr>
         <tr>
             <td></td> <!--Placeholder for Remove Button-->
-            <td><input type="text" id="Category" name="Category" oninput="filterTable()"></td>
-            <td><input type="text" id="Name" name="Name" oninput="filterTable()"></td>
+            <td><input type="text" id="category-filter" name="Category" oninput="filterTable()"></td>
+            <td><input type="text" id="name-filter" name="Name" oninput="filterTable()"></td>
             <td></td> <!--Placeholder for Weight/Count which have no filter-->
             <td></td> <!--Placeholder for Added which have no filter-->
         </tr>
         {% for j in items %}
-        <tr name="dataRow" id="row{{j['id']}}">
+        <tr name="dataRow" class="dataRow" id="row{{j['id']}}">
             <td>
                 <button onclick="removeOnClickHandler('{{url_for('Inventory.put_item', id=j['id'])}}')">Remove</button>
             </td>
@@ -128,16 +210,18 @@
         {% endfor %}
     </table>
 
-    <div class="form-container" id="input-form-conatiner">
-        <form method="POST" action="{{url_for('Inventory.post_item')}}">
+    <!-- <div class="form-container" id="input-form-conatiner"> -->
+        <form method="POST" action="{{url_for('Inventory.post_item')}}" autocomplete="off">
             {{ form.csrf_token }}
-            {{ form.category.label }} {{ form.category(size=20) }}
-            {{ form.name.label }} {{ form.name(size=20) }}
+            {{ form.category.label }} 
+            <div class="autocomplete" id="category-autocomplete" style="width:300px">{{ form.category(size=20) }}</div>
+            {{ form.name.label }} 
+            <div class="autocomplete" id="name-autocomplete" style="width:300px">{{ form.name(size=20) }}</div>
             {{ form.weight.label }} {{ form.weight }}
             {{ form.count.label }} {{ form.count }}
             <input type="submit" value="GO">        
         </form>
-    </div>
+    <!-- </div> -->
 
     {% if form.name.errors %}
         <ul class="errors">
@@ -146,6 +230,5 @@
             {% endfor %}
         </ul>
     {% endif %}
-
 </body>
 </html>

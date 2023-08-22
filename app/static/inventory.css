@@ -1,5 +1,5 @@
 body {
-    font-size: 100%;
+    font-size: 1.0em;
     font-family: Arial, Helvetica, sans-serif;
     color: black;
 }
@@ -7,33 +7,29 @@ body {
 h1 {
     font-size: 2.0em;
     color: dodgerblue;
+    text-align: center;
 }
 
-h1.form {
+table {
+    font-family: Arial, Helvetica, sans-serif;
     text-align: center;
+    width: 100%;
+    font-size: 1.5em;
+    color: black;
+    background-color: white;
 }
 
 th {
     font-size: 1.2em;
-    font-family: Arial, Helvetica, sans-serif;
-    color: #9a9996;
-    text-align: center;
-    padding: 15px;
+    color: darkgray;
+    padding: 0.2em;
 }
 
-tr {
-    font-size: 100%;
-    font-family: Arial, Helvetica, sans-serif;
-    color: black;
-}
-tr:nth-child(even) {background-color: #9a9996;}
+tr.dataRow:nth-child(even) {background-color: darkgray;}
 
 td {
-    font-size: 1.0em;
-    font-family: Arial, Helvetica, sans-serif;
     color: black;
-    text-align: center;
-    padding: 15px;
+    padding: 0.2em;
 }
 
 .form-container {
@@ -42,4 +38,51 @@ td {
     position: sticky;
     bottom: 0;
     /* width: 100%; */
+}
+
+.autocomplete {
+    /* container to hold the autocomplete input and items */
+    position: relative;
+    display: inline-block;
+}
+
+.autocomplete-items {
+    position: absolute;
+    border: 1px solid black;
+    border-bottom: none;
+    z-index: 99;
+    /* top: 100%; */
+    left: 0;
+    right: 0;
+    bottom: 100%;
+    background-color: white;
+}
+
+.autocomplete-items div {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid black;
+}
+
+.autocomplete-items div:hover {
+    /*when mouse hovering over an item*/
+    background-color: darkgray;
+}
+
+.autocomplete-active {
+    /*when navigating through the items using arrow keys*/
+    background-color: dodgerblue !important;
+    color: white;
+}
+
+td button {
+    font-size: 1.2em;
+}
+
+td input {
+    font-size: 1.2em;
+}
+
+form {
+    font-size: 1.75em;
 }

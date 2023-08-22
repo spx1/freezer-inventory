@@ -68,3 +68,13 @@ def get_item():
     items : List[ItemInterface] = ItemService.get(filter)
 
     return schema.dumps(items, many=True)
+
+@api.route(rule='/categories', methods=['GET'])
+def get_category():
+    schema = CategorySchema()
+    filter = CategoryInterface(
+        name = request.args.get("category", "%")
+    )
+    categories : List[CategoryInterface] = CategoryService.get(filter)
+
+    return schema.dumps(categories, many=True)
