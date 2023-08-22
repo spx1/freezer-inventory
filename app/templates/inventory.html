@@ -131,8 +131,12 @@
                 // close any other lists
                 params = new URLSearchParams();
                 var url = foo_url(params);
-                xhtml.open('GET', url);
-                xhtml.send();
+                if( url ) {
+                    xhtml.open('GET', url);
+                    xhtml.send();
+                } else {
+                    closeAllLists();
+                }
             });
         };
 
@@ -140,8 +144,11 @@
             category = document.getElementById('category');
             if( category.value.length > 0 ) {
                 params.append("category", "%" + category.value + "%");
+                return "{{url_for('Inventory.get_category')}}?" + params.toString();
+            } else {
+                return false
             }
-            return "{{url_for('Inventory.get_category')}}?" + params.toString(); 
+            
         }
 
         var item_url = function(params) {
@@ -152,8 +159,11 @@
             }
             if( item.value.length > 0 ) {
                 params.append("name", "%" + item.value + "%");
+                return "{{url_for('Inventory.get_item')}}?" + params.toString();
+            } else {
+                return false;
             }
-            return "{{url_for('Inventory.get_item')}}?" + params.toString();
+            
         }
 
         document.addEventListener('DOMContentLoaded', function()  {
