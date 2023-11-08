@@ -60,6 +60,7 @@ class TestCategoryService:
             comparison = CategoryService.get()
             assert len(comparison) == len(categories)
 
+
 @pytest.fixture()
 def categories(db):
     categories = [
@@ -197,3 +198,9 @@ class TestItemService:
         
         assert not test['active']
         assert test['removed'] == datetime.datetime.now().date()
+
+    def test_get_unique_item(self, db, items, categories):
+        """Test that we can filter for unique name/category items"""
+        item = items[5]
+        tests = ItemService.get( ItemInterface(name=item.name, category=CategoryInterface(name=item.category.name)), True)
+        assert len(tests) == 1

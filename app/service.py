@@ -1,7 +1,7 @@
 from .interface import CategoryInterface, ItemInterface
 from .model import CCategory, CItem
 from app import db
-from typing import List,Iterator
+from typing import List,Iterator,Dict
 import datetime
 
 
@@ -110,7 +110,7 @@ class ItemService:
         return query.order_by(CItem.added).all()
     
     @staticmethod    
-    def get(filter : ItemInterface = None) -> List[ItemInterface]:
+    def get(filter : ItemInterface = None, unique : bool = False) -> List[ItemInterface]:
         def CItemList2InterfaceList(objs:List[CItem]):
             def CItem2Interface(obj:CItem):
                 return ItemInterface(
@@ -120,7 +120,12 @@ class ItemService:
                     )
             return [CItem2Interface(x) for x in objs]
         
-        return CItemList2InterfaceList( ItemService.get_object(filter) )
+        items = ItemService.get_object(filter)
+        if unique:
+            # remove duplicate name/cateogry items by creating a dictionary key from them
+            dict : Dict[str,CItem] = {f"{x.name}:{x.category.name}" : x for x in items}
+            items = dict.values()
+        return CItemList2InterfaceList( items )
     
     @staticmethod
     def get_name_match(token : str, limit : int = 5, category : CategoryInterface = None ) -> List[str]:

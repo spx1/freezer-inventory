@@ -65,7 +65,7 @@ def get_item():
         active = bool(request.args.get("active", "True"))
         )
     filter['Active'] = True
-    items : List[ItemInterface] = ItemService.get(filter)
+    items : List[ItemInterface] = ItemService.get(filter, request.args.get("unique", False, bool))
 
     return schema.dumps(items, many=True)
 

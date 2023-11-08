@@ -159,6 +159,7 @@
             }
             if( item.value.length > 0 ) {
                 params.append("name", "%" + item.value + "%");
+                params.append("unique", "True");
                 return "{{url_for('Inventory.get_item')}}?" + params.toString();
             } else {
                 return false;
