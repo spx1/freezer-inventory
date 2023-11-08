@@ -23,6 +23,7 @@ class CategoryService:
         
         try:
             validate(obj)
+            obj['name'] = obj['name'].lower()
             db.session.add(CCategory( **obj ))
             db.session.commit()
             return CategoryService.get(obj)
@@ -36,7 +37,7 @@ class CategoryService:
         """Get a list of objects that match the search criteria"""
         def CCategoryList2InterfaceList(objs:List[CCategory]):
             def CCategory2Interface(obj:CCategory):
-                return CategoryInterface(id=obj.id, name=obj.name)
+                return CategoryInterface(id=obj.id, name=obj.name.title())
             return [CCategory2Interface(x) for x in objs]
 
         query = CCategory.query
@@ -82,6 +83,7 @@ class ItemService:
             obj['category_id'] = category['id']
             obj.pop('category')
             if 'added' not in obj: obj['added'] = datetime.datetime.now().date()
+            obj['name'] = obj['name'].lower()
             db.session.add(CItem( **obj ))
             db.session.commit()
             return ItemService.get(obj)
@@ -114,16 +116,16 @@ class ItemService:
         def CItemList2InterfaceList(objs:List[CItem]):
             def CItem2Interface(obj:CItem):
                 return ItemInterface(
-                    id=obj.id, name=obj.name, category_id=obj.category_id,
-                    category = obj.category, weight=obj.weight, count=obj.count,
-                    active=obj.active, added=obj.added, removed=obj.removed
+                    id=obj.id, name=obj.name.title(), category_id=obj.category_id,
+                    category = CategoryInterface(id = obj.category.id, name = obj.category.name.title()),
+                    weight=obj.weight, count=obj.count, active=obj.active, added=obj.added, removed=obj.removed
                     )
             return [CItem2Interface(x) for x in objs]
         
         items = ItemService.get_object(filter)
         if unique:
             # remove duplicate name/cateogry items by creating a dictionary key from them
-            dict : Dict[str,CItem] = {f"{x.name}:{x.category.name}" : x for x in items}
+            dict : Dict[str,CItem] = {f"{x.name.title()}:{x.category.name.title()}" : x for x in items}
             items = dict.values()
         return CItemList2InterfaceList( items )
     

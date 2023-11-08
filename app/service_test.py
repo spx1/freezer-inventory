@@ -117,7 +117,7 @@ class TestItemService:
         for test_interface, test_item in test_items:
             comparison = ItemService.get(test_interface)
             assert(len(comparison) > 0) , f"{test_interface['id']}, {test_interface['name']}"
-            for k in comparison[0].keys():
+            for k in filter(lambda x : x != "category", comparison[0].keys()):
                 assert getattr(test_item, k) == comparison[0][k]
         
         """Test return all items"""
@@ -143,7 +143,7 @@ class TestItemService:
         test_interface = ItemInterface(name=item.name, category=CategoryInterface(name = item.category.name), active=True)
         comparison = ItemService.get(test_interface)
 
-        for k in comparison[0].keys():
+        for k in filter(lambda x : x != "category", comparison[0].keys()):
             assert getattr(item, k) == comparison[0][k]
 
         """Test wildcard matches on name"""

@@ -195,8 +195,8 @@
             <td>
                 <button onclick="removeOnClickHandler('{{url_for('Inventory.put_item', id=j['id'])}}')">Remove</button>
             </td>
-            <td>{{j['category']['name']}}</td>
-            <td>{{j['name']}}</td>
+            <td>{{j['category']['name'].title()}}</td>
+            <td>{{j['name'].title()}}</td>
             <td>
                 {% if j['weight'] is not none %}
                 {{ j['weight'] }} lbs
