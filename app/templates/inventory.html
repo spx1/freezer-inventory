@@ -19,6 +19,20 @@
             xhtml.send(JSON.stringify(data));
         };
 
+        function copyOnClickHandler(url,src) {
+            params = new URLSearchParams();
+            params.append("action","copy");
+            params.adppend("id",src.toString());
+            xhtml = new XMLHttpRequest();
+            xhtml.onreadystatechange = function() {
+                if(this.readyState == 4 && this.status == 200) {
+                    window.location.href = "{{url_for('Inventory.get_application_page')}}";
+                }
+            }
+            xhtml.open('POST', url + "?" + params.toString() );
+            xhtml.send();
+        };
+
         function clearTable() {
             // clear all items from the inventory display table
             var rows = document.getElementsByName("dataRow")
@@ -194,6 +208,9 @@
         <tr name="dataRow" class="dataRow" id="row{{j['id']}}">
             <td>
                 <button onclick="removeOnClickHandler('{{url_for('Inventory.put_item', id=j['id'])}}')">Remove</button>
+            </td>
+            <td>
+                <button onclick="copyOnClickHandler('{{url_for('Inventory.post_item')}}', {{j['id']}})">Copy</button>
             </td>
             <td>{{j['category']['name'].title()}}</td>
             <td>{{j['name'].title()}}</td>

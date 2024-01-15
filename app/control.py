@@ -40,12 +40,28 @@ def get_application_page():
 
 @api.route(rule='/items', methods=['POST'])
 def post_item():
-    form = MyForm()
-    print(form.get_interface())
-    if form.validate_on_submit():
+    def create():
+        form = MyForm()
         print(form.get_interface())
-        ItemService.create(form.get_interface())
+        if form.validate_on_submit():
+            print(form.get_interface())
+            ItemService.create(form.get_interface())
+
+    def copy():
+        id = request.args.get("id")
+        orig = ItemService.get_object( ItemInterface( id=id ) )[0]
+        new = ItemInterface( 
+            name = orig.name
+            , category_id = orig.category_id
+            , weight = orig.weight
+            , count = orig.count
+        )
+        ItemService.create( new )
     
+    if request.args.get("action",type=str, default="create") == "copy":
+        copy()
+    else:
+        create()
     return redirect(url_for(f'{APP_NAME}.get_application_page'))
 
 @api.route(rule='/item/<int:id>',methods=['PUT'])
