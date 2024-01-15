@@ -81,7 +81,8 @@ class ItemService:
             category = CategoryService.get_or_create(obj.get('category_id'),obj.get('category'))
             #obj['category'] = category
             obj['category_id'] = category['id']
-            obj.pop('category')
+            if 'category' in obj:
+                obj.pop('category')
             if 'added' not in obj: obj['added'] = datetime.datetime.now().date()
             obj['name'] = obj['name'].lower()
             db.session.add(CItem( **obj ))
