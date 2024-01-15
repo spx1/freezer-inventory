@@ -22,7 +22,7 @@
         function copyOnClickHandler(url,src) {
             params = new URLSearchParams();
             params.append("action","copy");
-            params.adppend("id",src.toString());
+            params.append("id",src);
             xhtml = new XMLHttpRequest();
             xhtml.onreadystatechange = function() {
                 if(this.readyState == 4 && this.status == 200) {
