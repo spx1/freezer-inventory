@@ -48,7 +48,7 @@ def post_item():
             ItemService.create(form.get_interface())
 
     def copy():
-        id = request.args.get("id")
+        id = request.args.get("id", type=int)
         orig = ItemService.get_object( ItemInterface( id=id ) )[0]
         new = ItemInterface( 
             name = orig.name
