@@ -56,27 +56,32 @@
                     document.createElement("td"),
                     document.createElement("td"),
                     document.createElement("td"),
+                    document.createElement("td"),
                     document.createElement("td")
                 ];
 
                 for( data_element of data_elements ) {
                     row_element.appendChild(data_element);
                 }
-                var button_element = document.createElement("button");
+                var remove_button_element = document.createElement("button");
                 var SCRIPT_ROOT = {{ request.script_root|tojson }} + "/Inventory";
-                button_element.setAttribute("onclick", "removeOnClickHandler( '" + SCRIPT_ROOT + "/item/" + obj.id + "' )" );
-                button_element.innerText = "Remove"
-                data_elements[0].appendChild(button_element);
-                data_elements[1].innerText = obj.category.name;
-                data_elements[2].innerText = obj.name;
+                remove_button_element.setAttribute("onclick", "removeOnClickHandler( '" + SCRIPT_ROOT + "/item/" + obj.id + "' )" );
+                remove_button_element.innerText = "Remove";
+                data_elements[0].appendChild(remove_button_element);
+                var copy_button_element = document.createElement("button");
+                copy_button_element.setAttribute("onclick", "copyOnClickHandler( '" + SCRIPT_ROOT + "/items'," + obj.id + " )" );
+                copy_button_element.innerText = "Copy";
+                data_elements[1].appendChild(copy_button_element);
+                data_elements[2].innerText = obj.category.name;
+                data_elements[3].innerText = obj.name;
                 if( obj.weight ){
-                    data_elements[3].innerText = obj.weight;
+                    data_elements[4].innerText = obj.weight;
                 } else if( obj.count ){
-                    data_elements[3].innerText = obj.count;
+                    data_elements[4].innerText = obj.count;
                 } else {
-                    data_elements[3].innerText = "n/a";
+                    data_elements[4].innerText = "n/a";
                 }
-                data_elements[4].innerText = obj.added;
+                data_elements[5].innerText = obj.added;
             }
         }
 
