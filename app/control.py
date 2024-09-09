@@ -12,6 +12,7 @@ api = Blueprint(
     name = f'{APP_NAME}',
     import_name = __name__,
     static_folder= STATIC_DIRECTORY,
+    static_url_path=f'/{APP_NAME}/static',
     template_folder=TEMPLATE_DIRECTORY,
     url_prefix = f'/{APP_NAME}'
 )
