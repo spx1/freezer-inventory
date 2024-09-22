@@ -85,4 +85,6 @@ td input {
 
 form {
     font-size: 1.75em;
+    padding-left: 10px;
+    padding-bottom: 10px;
 }

@@ -235,7 +235,7 @@
         {% endfor %}
     </table>
 
-    <!-- <div class="form-container" id="input-form-conatiner"> -->
+    <div class="form-container" id="input-form-conatiner">
         <form method="POST" action="{{url_for('Inventory.post_item')}}" autocomplete="off">
             {{ form.csrf_token }}
             {{ form.category.label }} 
@@ -246,7 +246,7 @@
             {{ form.count.label }} {{ form.count }}
             <input type="submit" value="GO">        
         </form>
-    <!-- </div> -->
+    </div>
 
     {% if form.name.errors %}
         <ul class="errors">
