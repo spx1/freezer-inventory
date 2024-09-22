@@ -110,7 +110,7 @@ class ItemService:
                         query = query.filter(CCategory.id == category['id'])
                     else:
                         query = query.filter(CCategory.name.like( category.get('name','%') ) )
-        return query.order_by(CItem.added).all()
+        return query.order_by(CItem.added).order_by(CCategory.name).order_by(CItem.name).order_by(CItem.id).all()
     
     @staticmethod    
     def get(filter : ItemInterface = None, unique : bool = False) -> List[ItemInterface]:
