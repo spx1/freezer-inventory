@@ -204,3 +204,18 @@ class TestItemService:
         item = items[5]
         tests = ItemService.get( ItemInterface(name=item.name, category=CategoryInterface(name=item.category.name)), True)
         assert len(tests) == 1
+
+    def test_ordered_sort(self, db, items, categories):
+        """Test that the sort is deterministic when given several items"""
+        expected_order = [
+            items[3],
+            items[2],
+            items[4],
+            items[5],
+            items[1],
+            items[0]
+        ]
+        tests = ItemService.get( )
+        print(tests)
+        for e, t in zip(expected_order, tests):
+            assert e.id == t['id']
