@@ -1,5 +1,5 @@
 from flask import Blueprint,render_template,redirect,url_for,request
-from app import TEMPLATE_DIRECTORY, STATIC_DIRECTORY, APP_NAME
+from app import TEMPLATE_DIRECTORY, STATIC_DIRECTORY, APP_NAME, BASE_DIRECTORY
 from .service import ItemService, CategoryService
 from .interface import ItemInterface, CategoryInterface
 from .schema import ItemSchema, CategorySchema
@@ -11,9 +11,12 @@ from typing import List
 api = Blueprint(
     name = f'{APP_NAME}',
     import_name = __name__,
-    static_folder= STATIC_DIRECTORY,
+    static_folder= 'static',
+    static_url_path='static',
     template_folder=TEMPLATE_DIRECTORY,
-    url_prefix = f'/{APP_NAME}'
+    url_prefix = f'/{APP_NAME}',
+    root_path= BASE_DIRECTORY
+
 )
 
 class MyForm(FlaskForm):
